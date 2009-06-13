@@ -1,6 +1,7 @@
 module ZooiLinky
   
   module ViewMethods
+    
     def anchor_for_link(link)
       link_to h(link.title), link.url
     end
@@ -16,12 +17,18 @@ module ZooiLinky
     def breadcrumbs_for_link(link)
       link.ancestors.reverse
     end
-
+      
+    def current_link?(link)
+      !link.nil? && current_link == link
+    end
+    
   end
   
   module ControllerMethods
     
     def self.included(base)
+      base.send :attr_reader, :current_link
+      base.send :helper_method, :current_link
       base.before_filter :find_current_link
       base.before_filter :find_root_link
     end
