@@ -12,6 +12,10 @@ class Link < ActiveRecord::Base
     self.all(:conditions => conditions)
   end
   
+  def has_children?
+    !children.empty?
+  end
+  
   def self_and_ancestors
     [self] + ancestors
   end

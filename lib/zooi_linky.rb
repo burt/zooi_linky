@@ -3,19 +3,11 @@ module ZooiLinky
   module ViewMethods
     
     def anchor_for_link(link)
-      link_to h(link.title), link.url
-    end
-
-    def anchor_for_link_unless_current(link, current_link)
-      link_to h(link.title), link.url
+      link_to h(link.title).capitalize, link.url
     end
 
     def links_with_tag(tag)
       Link.tagged_with(tag, :on => :tags)
-    end
-
-    def breadcrumbs_for_link(link)
-      link.ancestors.reverse
     end
       
     def is_current_link?(link)
