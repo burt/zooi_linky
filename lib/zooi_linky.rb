@@ -18,7 +18,7 @@ module ZooiLinky
       link.ancestors.reverse
     end
       
-    def current_link?(link)
+    def is_current_link?(link)
       !link.nil? && current_link == link
     end
     
@@ -27,14 +27,13 @@ module ZooiLinky
   module ControllerMethods
     
     def self.included(base)
-      base.send :attr_reader, :current_link
-      base.send :helper_method, :current_link
-      base.before_filter :find_current_link
-      base.before_filter :find_root_link
+      [:current_link, :root_link].each { |link| create_helper(base, link) }
     end
     
     def find_current_link
-      @current_link = Link.all.find { |l| l.url == current_url }
+      @current_link = Link.all.find do |l|
+        controller_action_id == l.controller_action_id
+      end
     end
     
     def find_root_link
@@ -43,6 +42,31 @@ module ZooiLinky
 
     def current_url
       self.request.request_uri
+    end
+    
+    def controller_action_id
+      {
+        :controller => params[:controller],
+        :action => params[:action],
+        :id => params[:id]
+      }
+    end
+    
+    private
+    
+    # Creates helper methods for given link name
+    # E.g. for name 'current_link'
+    #   current_link - attr_reader
+    #   current_link? - checks whether reader has value
+    #   find_current_link - before filter
+    def self.create_helper(base, link)
+      base.send :define_method, "#{link}?" do
+        !(self.send link).nil?
+      end
+      base.send :helper_method, "#{link}?"
+      base.send :attr_reader, link
+      base.send :helper_method, link
+      base.before_filter "find_#{link}".to_sym
     end
     
   end

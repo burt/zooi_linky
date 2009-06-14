@@ -1,6 +1,8 @@
 class Link < ActiveRecord::Base
 
-  serialize :url
+  serialize :route
+  
+  attr_reader :url, :route_options
   
   acts_as_tree :order => 'title'
   acts_as_taggable_on :tags
@@ -18,20 +20,42 @@ class Link < ActiveRecord::Base
     tag_list.include?(tag)
   end
   
-  def url
-    begin
-      path = read_attribute(:url)
-      if path.is_a? Symbol
-        UrlWriter.new.send path
-      else
-        path
-      end
-    rescue
-      '/404.html'
+  def after_find
+    set_route_options
+  end
+  
+  def controller_action_id
+    {
+      :controller => route_options[:controller],
+      :action => route_options[:action],
+      :id => route_options[:id]
+    }
+  end
+
+  private
+  
+  def set_route_options
+    if route.is_a? String
+      @url = route
+      @route_options = route_for_url(@url)
+    else
+      @url = url_for(route)
+      @route_options = route
     end
   end
   
-  private
+  def url_for(opts)
+    opts.merge!({ :only_path => true })
+    UrlWriter.new.send :url_for, opts
+  end
+  
+  def route_for_url(url, method = 'get')
+    begin
+      ActionController::Routing::Routes.recognize_path(url, :method => method.to_sym)
+    rescue
+      nil
+    end
+  end
   
   class UrlWriter
     include ActionController::UrlWriter
