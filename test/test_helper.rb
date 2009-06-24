@@ -1,3 +1,4 @@
+=begin
 begin
   require 'rubygems'
   require 'test/unit'
@@ -18,3 +19,4 @@ begin
 rescue
   puts "Problem requiring dependencies in test helper [#{$!}]"
 end
+=end
