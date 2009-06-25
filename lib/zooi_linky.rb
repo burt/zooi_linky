@@ -11,7 +11,7 @@ module ZooiLinky
     end
       
     def is_current_link?(link)
-      current_link.equivalent? link
+      !current_link.nil? && current_link.equivalent?(link)
     end
     
   end
