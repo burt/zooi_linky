@@ -28,6 +28,14 @@ class Link < ActiveRecord::Base
     set_route_options
   end
   
+  def equivalent?(subject)
+    if subject.respond_to? :controller_action_id
+      subject.controller_action_id == self.controller_action_id
+    else
+      false
+    end
+  end
+  
   def controller_action_id
     {
       :controller => route_options[:controller],

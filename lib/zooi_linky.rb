@@ -11,7 +11,7 @@ module ZooiLinky
     end
       
     def is_current_link?(link)
-      !link.nil? && current_link == link
+      current_link.equivalent? link
     end
     
   end
@@ -23,9 +23,7 @@ module ZooiLinky
     end
     
     def find_current_link
-      @current_link = Link.all.find do |l|
-        controller_action_id == l.controller_action_id
-      end
+      @current_link = Link.all.find { |l| l.equivalent?(self) }
     end
     
     def find_root_link
