@@ -14,6 +14,10 @@ module ZooiLinky
       !current_link.nil? && current_link.equivalent?(link)
     end
     
+    def is_strictly_current_link?(link)
+      !current_link.nil? && current_link == link
+    end
+    
   end
   
   module ControllerMethods

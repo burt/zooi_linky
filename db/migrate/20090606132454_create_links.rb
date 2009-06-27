@@ -4,6 +4,7 @@ class CreateLinks < ActiveRecord::Migration
       t.string :title
       t.string :route
       t.string :method
+      t.boolean :visible
       t.integer :parent_id
       t.timestamps
     end
