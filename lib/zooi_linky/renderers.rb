@@ -8,7 +8,7 @@ module ZooiLinky
       def links_to_tabs(links, selected_class = 'selected')
         list = links.collect do |l|
           if permitted_to_view_link?(l) && l.resolved?
-            content_tag :li, anchor_for_link(l), :class => (selected_class if link_selected?(l) )
+            content_tag :li, anchor_for_link(l), :class => (selected_class if link_selected?(l))
           else
             ''
           end

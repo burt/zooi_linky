@@ -34,7 +34,17 @@ class Link < ActiveRecord::Base
   
   def equivalent?(subject)
     if subject.respond_to? :controller_action_id
-      subject.controller_action_id == self.controller_action_id
+      if require_id?
+        subject.controller_action_id == self.controller_action_id
+      else
+        # TODO: brent: this is a bit ugly: change so responds to both
+        # controller_action_id and controller_action? maybe
+        a = subject.controller_action_id
+        b = self.controller_action_id
+        a.delete(:id)
+        b.delete(:id)
+        a == b
+      end
     else
       false
     end
