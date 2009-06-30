@@ -39,11 +39,11 @@ module ZooiLinky
     end
     
     def controller_action_id
-      {
-        :controller => params[:controller],
-        :action => params[:action],
-        :id => params[:id]
-      }
+      { :id => params[:id] }.merge controller_action
+    end
+
+    def controller_action
+      { :controller => params[:controller], :action => params[:action] }
     end
     
     private

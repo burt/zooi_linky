@@ -36,14 +36,8 @@ class Link < ActiveRecord::Base
     if subject.respond_to? :controller_action_id
       if require_id?
         subject.controller_action_id == self.controller_action_id
-      else
-        # TODO: brent: this is a bit ugly: change so responds to both
-        # controller_action_id and controller_action? maybe
-        a = subject.controller_action_id
-        b = self.controller_action_id
-        a.delete(:id)
-        b.delete(:id)
-        a == b
+      elsif subject.respond_to? :controller_action
+        subject.controller_action == self.controller_action
       end
     else
       false
@@ -51,11 +45,11 @@ class Link < ActiveRecord::Base
   end
   
   def controller_action_id
-    {
-      :controller => route_options[:controller],
-      :action => route_options[:action],
-      :id => route_options[:id]
-    }
+    { :id => route_options[:id] }.merge controller_action
+  end
+  
+  def controller_action
+    { :controller => route_options[:controller], :action => route_options[:action] }
   end
 
   private
