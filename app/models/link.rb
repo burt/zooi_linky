@@ -68,27 +68,15 @@ class Link < ActiveRecord::Base
   end
   
   def url_for(opts)
-    if url_resolvable_from_opts? opts
+    begin
       opts.merge!({ :only_path => true })
       UrlWriter.new.send :url_for, opts
-    else
+    rescue
+      RAILS_DEFAULT_LOGGER.info ":::::::::::::: Can't resolve url ::#{opts.inspect}"
       nil
     end
   end
-  
-  def url_resolvable_from_opts?(opts)
-    controller, action, id = opts[:controller], opts[:action], opts[:id]
-    return false if controller.nil?
-    resolvable = case action.to_sym
-      when :show, :edit, :update, :destroy
-        !id.nil?
-      when :index, :new, :create
-        true
-      else
-        false
-    end
-  end
-  
+
   def route_for_url(url, method = 'get')
     begin
       ActionController::Routing::Routes.recognize_path(url, :method => method.to_sym)
