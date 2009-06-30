@@ -3,9 +3,10 @@ class CreateLinks < ActiveRecord::Migration
     create_table :links do |t|
       t.string :title
       t.string :route
-      t.string :method
-      t.boolean :visible
+      t.boolean :require_id, :default => true
+      t.boolean :visible, :default => true
       t.integer :parent_id
+      t.string :method
       t.timestamps
     end
   end
