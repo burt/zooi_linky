@@ -72,7 +72,7 @@ class Link < ActiveRecord::Base
       opts.merge!({ :only_path => true })
       UrlWriter.new.send :url_for, opts
     rescue
-      RAILS_DEFAULT_LOGGER.info ":::::::::::::: Can't resolve url ::#{opts.inspect}"
+      # RAILS_DEFAULT_LOGGER.info ":::::::::::::: Can't resolve url ::#{opts.inspect}"
       nil
     end
   end
