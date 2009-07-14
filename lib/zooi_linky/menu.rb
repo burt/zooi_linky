@@ -20,6 +20,20 @@ module ZooiLinky
       @current_link ||= find_current(self)
     end
     
+    def selected_child_at_depth(depth)
+      return self unless depth > 0
+      current_link = self
+      selected = nil
+      while !current_link.nil?
+        current_link = current_link.selected_child
+        if !current_link.nil? && current_link.depth-1 == depth
+          selected = current_link
+          break
+        end
+      end
+      selected
+    end
+    
     private
     
     def find_current(link)

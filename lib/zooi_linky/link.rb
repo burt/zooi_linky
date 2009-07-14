@@ -15,7 +15,17 @@ module ZooiLinky
       @title = id
       Mapper.new(self).instance_eval &block if block_given?
     end
-  
+    
+    def depth
+      d = 0
+      current = self
+      until current.nil?
+        current = current.parent
+        d = d + 1
+      end
+      d
+    end
+    
     def [](key)
       params[key]
     end
@@ -56,6 +66,10 @@ module ZooiLinky
     def selected?
       @selection_constraints.any? { |constraint| constraint.pass?(self) }
     end
+    
+    def selected_child
+      @children.find { |c| c.selected? }
+    end
   
     def current_url?
       current_url == url
@@ -67,6 +81,10 @@ module ZooiLinky
   
     def descendant_selected?
       @children.any? { |c| c.selected? || c.child_selected? }
+    end
+    
+    def current_url_is?
+      #####################################
     end
   
     def add_selection_constraint(constraint)

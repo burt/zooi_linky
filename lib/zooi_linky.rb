@@ -1,5 +1,6 @@
 # todo: brent: 
 # complete 
+# - current url is? clause check to remove duplication
 # - back end menu
 # - front end menu
 # - permitted to view link helper

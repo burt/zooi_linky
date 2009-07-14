@@ -22,9 +22,10 @@ module ZooiLinky
     
     module BasicRenderer
       
-      def render_menu(tag)
+      def render_menu_level(tag, level)
         menu = MenuBuilder.new.build(self, tag)
-        render_link menu
+        link = menu.selected_child_at_depth(level)
+        render_link_children(link)
       end
       
       def render_breadcrumbs(tag)
@@ -34,24 +35,19 @@ module ZooiLinky
       
       private
       
-      def render_link(menu)
+      def render_link_children(link)
         links = ""
-        selected = nil
-        unless menu.nil?
-          menu.each do |l|
+        unless link.nil?
+          link.each do |l|
             link_tag = format_link(l)
             li_classes = []
             li_classes << 'current' if l.current_url?
             li_classes << 'selected' if l.selected?
             selected = l if l.selected?
             links << content_tag(:li, link_tag, :class => li_classes.join(' '))
-          end
+          end  
         end
-        tags = content_tag :ul, links
-        unless selected.nil?
-          tags << render_link(selected)
-        end
-        tags
+        content_tag :ul, links
       end
       
       def format_link(link)
