@@ -1,2 +1,2 @@
-ActionView::Base.send :include, ZooiLinky::ViewMethods
-ActionController::Base.send :include, ZooiLinky::ControllerMethods
+# currently opt-in rather than auto
+#ActionView::Base.send :include, ZooiLinky::Renderers::BasicRenderer
