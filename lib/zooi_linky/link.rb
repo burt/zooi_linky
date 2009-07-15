@@ -2,17 +2,20 @@
 
 module ZooiLinky
   class Link
-    include ActionController::UrlWriter
-  
+    
     attr_reader :id
     attr_accessor :title, :url, :parent, :children
     attr_accessor :view, :current_url
+    attr_accessor :current_if_selected
+    attr_accessor :options, :visible_in_menu
       
     def initialize(id, &block)
       @selection_constraints = []
+      @options = {}
       @children = []
       @id = id
       @title = id
+      @visible_in_menu = true
       Mapper.new(self).instance_eval &block if block_given?
     end
     
@@ -54,12 +57,20 @@ module ZooiLinky
     def root?
       parent.nil?
     end
-  
+    
+    def title
+      if @title.is_a? Proc
+        self.instance_eval &@title
+      else
+        @title
+      end
+    end
+    
     def url
-      case @url
-        when Proc then @view.instance_eval &@url
-        when Hash then url_for(@url.merge({ :only_path => true }))
-        else @url
+      if @url.respond_to? :resolve
+        @url.resolve(@view)
+      else
+        @url
       end
     end
   
@@ -72,7 +83,11 @@ module ZooiLinky
     end
   
     def current_url?
-      current_url == url
+      if current_if_selected
+        selected?
+      else
+        current_url == url
+      end
     end
   
     def child_selected?
@@ -82,10 +97,6 @@ module ZooiLinky
     def descendant_selected?
       @children.any? { |c| c.selected? || c.child_selected? }
     end
-    
-    def current_url_is?
-      #####################################
-    end
   
     def add_selection_constraint(constraint)
       p = if constraint.is_a?(Hash)
@@ -94,6 +105,8 @@ module ZooiLinky
         end
       elsif constraint.is_a?(Symbol) && permitted_sym_constraint?(constraint)
         lambda { self.send constraint }
+      elsif constraint.is_a?(Proc)
+        constraint
       end
     
       unless p.nil?
@@ -103,7 +116,11 @@ module ZooiLinky
   
     # todo: move to subclass of constraint
     def permitted_sym_constraint?(constraint)
-      %w{ child_selected? descendant_selected? current_url? }.include? constraint.to_s
+      %w{ 
+        child_selected?
+        descendant_selected?
+        current_url?
+      }.include? constraint.to_s
     end
   
     def deep_clone

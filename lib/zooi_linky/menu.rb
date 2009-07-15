@@ -8,7 +8,7 @@ module ZooiLinky
     
     def breadcrumbs
       crumbs = []
-      current = @current_link
+      current = current_link
       until current.nil? || current.root?
         crumbs << current
         current = current.parent

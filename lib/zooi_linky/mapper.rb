@@ -10,6 +10,18 @@ module ZooiLinky
       @current_link = current_link
     end
     
+    def self.delegate_to_writer(method, target)
+      define_method method do |val|
+        obj = self.send target
+        obj.send "#{method}=", val
+      end
+    end
+    
+    delegate_to_writer :visible_in_menu, :current_link
+    delegate_to_writer :title, :current_link
+    delegate_to_writer :current_if_selected, :current_link
+    delegate_to_writer :options, :current_link
+    
     def menu(id, &block)
       link = Menu.new(id, &block)
       Menus[id] = link
@@ -20,16 +32,24 @@ module ZooiLinky
       current_link << link
     end
     
-    def title(title)
-      current_link.title = title
-    end
-    
     def url(url)
-      current_link.url = url
+      current_link.url = LinkUrl.new(url)
     end
     
     def selected_if(clause)
       current_link.add_selection_constraint clause
+    end
+    
+    def selected_if_params(opts)
+      selected_if lambda {
+        opts.keys.all? { |k| opts[k] == params[k] }
+      }
+    end
+    
+    def selected_if_url(url)
+      current_link.add_selection_constraint lambda {
+        self.current_url == LinkUrl.new(url).resolve(self.view)
+      }
     end
     
   end

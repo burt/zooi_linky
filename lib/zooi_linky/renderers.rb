@@ -30,7 +30,9 @@ module ZooiLinky
       
       def render_breadcrumbs(tag)
         menu = MenuBuilder.new.build(self, tag)
-        menu.breadcrumbs.collect { |l| format_link(l) }.join(" > ")
+        menu.breadcrumbs.collect do |l|
+          l.current_url? ? l.title : format_link(l)
+        end.join(" > ")
       end
       
       private
@@ -39,12 +41,14 @@ module ZooiLinky
         links = ""
         unless link.nil?
           link.each do |l|
-            link_tag = format_link(l)
-            li_classes = []
-            li_classes << 'current' if l.current_url?
-            li_classes << 'selected' if l.selected?
-            selected = l if l.selected?
-            links << content_tag(:li, link_tag, :class => li_classes.join(' '))
+            if l.visible_in_menu
+              link_tag = format_link(l)
+              li_classes = []
+              li_classes << 'current' if l.current_url?
+              li_classes << 'selected' if l.selected?
+              selected = l if l.selected?
+              links << content_tag(:li, link_tag, :class => li_classes.join(' '))
+            end
           end  
         end
         content_tag :ul, links

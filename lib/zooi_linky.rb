@@ -7,6 +7,7 @@
 # - breadcrumbs (for completeness)
 # - setting groups
 # - link sets
+# - partial includes
 
 module ZooiLinky
   
