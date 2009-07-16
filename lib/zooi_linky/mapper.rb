@@ -1,4 +1,4 @@
-# todo: brent: separate out into submappers
+# todo: brent: separate out into submappers for extensibility
 
 module ZooiLinky
   

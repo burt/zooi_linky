@@ -73,6 +73,15 @@ module ZooiLinky
         @url
       end
     end
+    
+    def route
+      begin
+        ActionController::Routing::Routes.recognize_path(url.gsub(/\?.*/, ''), :method => :get)
+      rescue
+        # todo: brent: logging
+        {}
+      end
+    end
   
     def selected?
       @selection_constraints.any? { |constraint| constraint.pass?(self) }
