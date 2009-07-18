@@ -1,5 +1,4 @@
 module ZooiLinky    
-    # todo: brent: move to sep class
    class MenuBuilder
 
     def build(view, tag)
