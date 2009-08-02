@@ -34,7 +34,11 @@ module ZooiLinky
     def <=>(o)
       priority_cmp = -(self.priority) <=> -(o.priority)
       return priority_cmp unless priority_cmp == 0
-      return self.title <=> o.title
+      begin # titles that are procs (dynamically evaluated) cause issues, so ignore them :)
+        self.title <=> o.title
+      rescue
+        0
+      end
     end
     
     def [](key)
