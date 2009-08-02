@@ -8,7 +8,8 @@ module ZooiLinky
     attr_accessor :view, :current_url
     attr_accessor :current_if_selected
     attr_accessor :options, :visible_in_menu
-      
+    attr_accessor :priority
+    
     def initialize(id, &block)
       @selection_constraints = []
       @options = {}
@@ -16,6 +17,7 @@ module ZooiLinky
       @id = id
       @title = id
       @visible_in_menu = true
+      @priority = 0
       Mapper.new(self).instance_eval &block if block_given?
     end
     
@@ -27,6 +29,12 @@ module ZooiLinky
         d = d + 1
       end
       d
+    end
+    
+    def <=>(o)
+      priority_cmp = -(self.priority) <=> -(o.priority)
+      return priority_cmp unless priority_cmp == 0
+      return self.title <=> o.title
     end
     
     def [](key)

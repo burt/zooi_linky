@@ -21,7 +21,7 @@ module ZooiLinky
       def render_link_children(link, opts = {})
         links = ""
         unless link.nil?
-          link.each do |l|
+          link.children.sort.each do |l|
             if l.visible_in_menu && permitted_to_view_link?(l)
               link_tag = format_link(l)
               li_classes = []

@@ -21,6 +21,7 @@ module ZooiLinky
     delegate_to_writer :title, :current_link
     delegate_to_writer :current_if_selected, :current_link
     delegate_to_writer :options, :current_link
+    delegate_to_writer :priority, :current_link
     
     def menu(id, &block)
       link = Menu.new(id, &block)
