@@ -7,8 +7,9 @@ module ZooiLinky
     attr_accessor :title, :url, :parent, :children
     attr_accessor :view, :current_url
     attr_accessor :current_if_selected
-    attr_accessor :options, :visible_in_menu
+    attr_accessor :options
     attr_accessor :priority
+    attr_accessor :visible_in_menu
     
     def initialize(id, &block)
       @selection_constraints = []
