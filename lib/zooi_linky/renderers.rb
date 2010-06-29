@@ -51,10 +51,10 @@ module ZooiLinky
       def permitted_to_view_link?(link)
         action = link.route[:action]
         controller = link.route[:controller]
-        unless action.nil? || controller.nil?
-          permitted_to? action.to_sym, controller.gsub('/', '_').to_sym
+        if link.options[:model]
+          can_list?(link.options[:model].constantize.new)
         else
-          false
+          true
         end
       end
       
