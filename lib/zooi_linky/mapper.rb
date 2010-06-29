@@ -30,6 +30,8 @@ module ZooiLinky
     
     def link(id, &block)
       link = Link.new(id, &block)
+      # merge options of parent links, entries in new link options take precendence
+      link.options.reverse_merge!(current_link.options)
       current_link << link
     end
     

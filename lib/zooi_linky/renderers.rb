@@ -53,8 +53,10 @@ module ZooiLinky
         controller = link.route[:controller]
         if link.options[:model]
           can_list?(link.options[:model].constantize.new)
+        elsif (sentry_class = link.options[:sentry])
+          can_list?({}, :sentry => sentry_class)
         else
-          true
+          false
         end
       end
       
